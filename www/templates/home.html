@@ -1,16 +1,27 @@
 <ion-view view-title="EasyPower Mobile">
   <ion-content>
 
+
+
+
     <div class="list list-inset">
       <div class="item item-divider">
         Available Projects
       </div>
+
+      <button class="button button-full" ng-repeat="project in projects"
+              ng-class-odd="'button-calm'" ng-class-even="'button-balanced'" ng-click="runProject(project)">
+        {{project}}
+      </button>
+      <!--
       <div class="item item-thumbnail-left item-text-wrap item-avatar" ng-repeat="project in projects">
 
         <h3 class="media-heading" style="font-weight: 600">{{project}}</h3>
 
       </div>
+      -->
     </div>
+
 
   </ion-content>
 </ion-view>

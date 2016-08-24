@@ -166,6 +166,9 @@ angular.module('easyPower.controllers', [])
 
     $scope.message = "Loading ...";
     $scope.projects = projectFactory.query();
+    $scope.runProject = function(project) {
+      alert(project);
+    };
   }])
 
   //========================================================================
