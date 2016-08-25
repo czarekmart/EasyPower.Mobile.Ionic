@@ -4,21 +4,22 @@ angular.module('easyPower.services', ['ngResource'])
   .constant("baseURL", "http://localhost:41472/api/")
 
 
-  .factory('projectFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+  //*********************************************************************************
+  .service('projectService', ['$resource', 'baseURL', function ($resource, baseURL) {
 
+    this.getProjects = function() {
+      return $resource(baseURL + "project/:id");
+    }
 
-    return $resource(baseURL + "project/:id");
+    var currentProject;
 
-  }])
-  .service('summaryFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+    this.getCurrentProject = function() {
+      return currentProject;
+    }
 
-    this.getSummary = function () {
-
-      return { message: "No Summary" };
-      // $resource(baseURL + "dishes/:id", null, {'update': {method: 'PUT'}});
-
-    };
-
+    this.setCurrentProject = function(project) {
+      currentProject = project;
+    }
 
   }])
 
@@ -36,10 +37,16 @@ angular.module('easyPower.services', ['ngResource'])
 
 
 
-  .factory('feedbackFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+  .service('summaryFactory', ['$resource', 'baseURL', 'projectService',
+    function ($resource, baseURL, projectService) {
 
+      this.getSummary = function() {
 
-    return $resource(baseURL + "feedback/:id");
+        var project = projectService.getCurrentProject();
+        //$http.defaults.headers.common['x-dez-name'] = project;
+        var res = $resource(baseURL + "summary/:id", { dbName: project });
+        return res;
+      }
 
   }])
 

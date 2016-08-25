@@ -51,7 +51,8 @@ angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.servic
         url: '/summary',
         views: {
           'mainContent': {
-            templateUrl: 'templates/summary.html'
+            templateUrl: 'templates/summary.html',
+            controller: 'SummaryController'
           }
         }
       });

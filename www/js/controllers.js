@@ -162,20 +162,29 @@ angular.module('easyPower.controllers', [])
   }])
 
   //========================================================================
-  .controller('IndexController', ['$scope', 'projectFactory', function ($scope, projectFactory) {
+  .controller('IndexController', ['$scope', '$state', 'projectService', function ($scope, $state, projectService) {
 
     $scope.message = "Loading ...";
-    $scope.projects = projectFactory.query();
+    $scope.projects = projectService.getProjects().query();
     $scope.runProject = function(project) {
-      alert(project);
+      projectService.setCurrentProject(project);
+      $state.go("app.summary");
     };
   }])
 
   //========================================================================
-  .controller('AboutController', ['$scope', 'corporateFactory', function ($scope, corporateFactory) {
+  .controller('SummaryController', ['$scope', 'summaryFactory', function ($scope, summaryFactory) {
 
-    $scope.leaders = corporateFactory.query();
-    console.log($scope.leaders);
+    var fac = summaryFactory.getSummary();
+    $scope.summary = fac.query()
+    .$promise.then(
+      function (response) {
+        $scope.summary = response;
+      },
+      function (response) {
+        $scope.message = "Error: " + response.status + " " + response.statusText;
+      }
+    );
 
   }])
 
