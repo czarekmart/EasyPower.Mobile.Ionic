@@ -12,6 +12,7 @@ angular.module('easyPower.services', ['ngResource'])
     }
 
     var currentProject;
+    var currentEquipmentInfo;
 
     this.getCurrentProject = function() {
       return currentProject;
@@ -21,33 +22,57 @@ angular.module('easyPower.services', ['ngResource'])
       currentProject = project;
     }
 
+    this.getProjectSummary = function () {
+
+      var res = $resource(baseURL + "summary/:id", {dbName: currentProject});
+      return res;
+    }
+
+    this.setCurrentEquipmentInfo = function(eqpInfo) {
+      currentEquipmentInfo = eqpInfo;
+    }
+
+    this.getCurrentEquipmentInfo = function() {
+      return currentEquipmentInfo;
+    }
+
+    this.getEquipmentList = function() {
+      return $resource(baseURL + currentEquipmentInfo.url + "/:id", {dbName: currentProject});
+    }
+
   }])
 
-  .service('equipmentFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
-    this.getEquipment = function () {
+  //*********************************************************************************
+  .service('equipment', [function () {
 
-      return {message: "No Equipment"};
-      //$resource(baseURL + "dishes/:id", null, {'update': {method: 'PUT'}});
-
-    };
-
-
-  }])
-
-
-
-  .service('summaryFactory', ['$resource', 'baseURL', 'projectService',
-    function ($resource, baseURL, projectService) {
-
-      this.getSummary = function() {
-
-        var project = projectService.getCurrentProject();
-        //$http.defaults.headers.common['x-dez-name'] = project;
-        var res = $resource(baseURL + "summary/:id", { dbName: project });
-        return res;
+    this.getProperties = function(url) {
+      if(url == "bus") {
+        return [
+          {name: "baseKV", display: "Base KV"},
+          {name: "zone", display: "Zone"},
+          {name: "area", display: "Area"},
+          {name: "busType", display: "Type"},
+          {name: "rating", display: "Rating"},
+        ];
       }
+      else if(url == "cable") {
+
+        return [];
+      }
+      else if(url == "load") {
+
+        return [];
+      }
+      else if(url == "motor") {
+        return [];
+      }
+      else {
+        return [];
+      }
+    }
 
   }])
+
 
 ;

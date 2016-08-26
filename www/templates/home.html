@@ -5,12 +5,10 @@
 
 
     <div class="list list-inset">
-      <div class="item item-divider">
-        Available Projects
-      </div>
 
-      <button class="button button-full" ng-repeat="project in projects"
-              ng-class-odd="'button-calm'" ng-class-even="'button-balanced'" ng-click="runProject(project)">
+
+      <button class="button button-block" ng-repeat="project in projects"
+              ng-class-odd="'button-calm'" ng-class-even="'button-balanced'" ng-click="openProject(project)">
         {{project}}
       </button>
       <!--

@@ -55,7 +55,18 @@ angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.servic
             controller: 'SummaryController'
           }
         }
-      });
+      })
+
+      .state('app.equipmentList', {
+        url: '/equipmentList',
+        views: {
+          'mainContent': {
+            templateUrl: 'templates/equipmentList.html',
+            controller: 'EquipmentListController'
+          }
+        }
+      })
+    ;
 
 
     // if none of the above states are matched, use this as the fallback

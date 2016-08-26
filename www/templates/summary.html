@@ -1,14 +1,13 @@
-<ion-view view-title="Project Summary">
+<ion-view view-title="Summary">
   <ion-content>
 
     <div class="list list-inset">
-      <div class="item item-divider">
-        Available Equipment
-      </div>
+      <button class="button button-block button-stable">
+        {{projectName}}
+      </button>
 
-      <button class="button button-full" ng-repeat="eqp in summary"
-              ng-class-odd="'button-calm'" ng-class-even="'button-balanced'"">
-        {{eqp.tableName}} : {{eqp.count}}
+      <button class="button button-outline button-positive button-block" ng-repeat="eqp in summary" ng-click="openEquipment(eqp)">
+        {{eqp.tableName}} : {{eqp.count}}{{eqp.count > 1 ? " items" : " item"}}
       </button>
 
     </div>

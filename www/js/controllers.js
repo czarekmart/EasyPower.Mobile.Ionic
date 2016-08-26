@@ -166,26 +166,35 @@ angular.module('easyPower.controllers', [])
 
     $scope.message = "Loading ...";
     $scope.projects = projectService.getProjects().query();
-    $scope.runProject = function(project) {
+    $scope.openProject = function(project) {
       projectService.setCurrentProject(project);
       $state.go("app.summary");
     };
   }])
 
   //========================================================================
-  .controller('SummaryController', ['$scope', 'summaryFactory', function ($scope, summaryFactory) {
+  .controller('SummaryController', ['$scope', '$state', 'projectService', function ($scope, $state, projectService) {
 
-    var fac = summaryFactory.getSummary();
-    $scope.summary = fac.query()
-    .$promise.then(
-      function (response) {
-        $scope.summary = response;
-      },
-      function (response) {
-        $scope.message = "Error: " + response.status + " " + response.statusText;
-      }
-    );
+    $scope.summary = projectService.getProjectSummary().query();
+    $scope.projectName = projectService.getCurrentProject();
+
+    $scope.openEquipment = function(eqp) {
+      projectService.setCurrentEquipmentInfo(eqp);
+      $state.go("app.equipmentList");
+    }
 
   }])
+
+  //========================================================================
+  .controller('EquipmentListController', ['$scope', '$state', 'projectService', 'equipment',
+    function ($scope, $state, projectService, equipment) {
+
+    $scope.projectName = projectService.getCurrentProject();
+    $scope.eqpInfo = projectService.getCurrentEquipmentInfo();
+    $scope.eqpList = projectService.getEquipmentList().query();
+    $scope.properties = equipment.getProperties($scope.eqpInfo.url);
+
+  }])
+
 
 ;
