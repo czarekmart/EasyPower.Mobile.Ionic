@@ -189,12 +189,45 @@ angular.module('easyPower.controllers', [])
   .controller('EquipmentListController', ['$scope', '$state', 'projectService', 'equipment',
     function ($scope, $state, projectService, equipment) {
 
-    $scope.projectName = projectService.getCurrentProject();
-    $scope.eqpInfo = projectService.getCurrentEquipmentInfo();
-    $scope.eqpList = projectService.getEquipmentList().query();
-    $scope.properties = equipment.getProperties($scope.eqpInfo.url);
+      $scope.projectName = projectService.getCurrentProject();
+      $scope.eqpInfo = projectService.getCurrentEquipmentInfo();
+      $scope.eqpList = projectService.getEquipmentList().query();
+      $scope.properties = equipment.getProperties($scope.eqpInfo.url);
+
+      $scope.getValue = function (eqp, prop) {
+        if(prop.mapValue) {
+          return prop.mapValue(eqp);
+        }
+        else {
+          return eqp[prop.name];
+        }
+      }
+
+      $scope.selectItemForDetail = function(eqpItem) {
+        equipment.setCurrentItem(eqpItem);
+        $state.go("app.equipmentDetail");
+      }
 
   }])
 
+  //========================================================================
+  .controller('EquipmentDetailController', ['$scope', '$state', 'projectService', 'equipment',
+    function ($scope, $state, projectService, equipment) {
+
+      $scope.projectName = projectService.getCurrentProject();
+      $scope.eqpInfo = projectService.getCurrentEquipmentInfo();
+      $scope.properties = equipment.getProperties($scope.eqpInfo.url, true);
+      $scope.item = equipment.getCurrentItem();
+
+      $scope.getValue = function (item, prop) {
+        if (prop.mapValue) {
+          return prop.mapValue(item);
+        }
+        else {
+          return item[prop.name];
+        }
+      }
+
+    }])
 
 ;

@@ -7,30 +7,16 @@
         {{eqpInfo.tableName}}
       </button>
 
-      <!--
-      <button class="button button-outline button-positive button-block" ng-repeat="eqp in eqpList">
-        {{eqp.name}}
-      </button>
-      -->
 
-      <div class="list" ng-repeat="eqp in eqpList">
-        <!--
-        <div class="item item-divider">
-          {{eqp.name}}
-        </div>
-        -->
+      <div class="list" ng-repeat="eqpItem in eqpList">
 
          <div class="item card" style="padding: 0; margin-top: 0;margin-bottom: 0">
-          <button class="button button-small button-stable button-block">{{eqp.name}}</button>
+          <button class="button button-small button-stable button-block" ng-click="selectItemForDetail(eqpItem)">{{eqpItem.name}}</button>
            <div class="row" ng-repeat="prop in properties" style="padding: 0">
              <div class="col col-40" style="padding: 4px; font-size: smaller">{{prop.display}}</div>
-             <div class="col col-60" style="padding: 4px; font-size: smaller">{{eqp[prop.name]}}</div>
+             <div class="col col-60" style="padding: 4px; font-size: smaller">{{getValue(eqpItem,prop)}}</div>
            </div>
-           <!--
-          <p ng-repeat="prop in properties">
-            {{prop.display}}: {{eqp[prop.name]}}
-          </p>
-          -->
+
         </div>
 
       </div>

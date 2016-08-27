@@ -1,0 +1,21 @@
+<ion-view view-title="">
+  <ion-content>
+
+
+    <button class="button button-block button-stable">
+      {{eqpInfo.tableName}}
+    </button>
+
+
+    <div class="item card" style="padding: 0; margin-top: 0;margin-bottom: 0">
+      <button class="button button-small button-stable button-block">{{item.name}}</button>
+      <div class="row" ng-repeat="prop in properties" style="padding: 0">
+        <div class="col col-40" style="padding: 4px; font-size: smaller">{{prop.display}}</div>
+        <div class="col col-60" style="padding: 4px; font-size: smaller">{{getValue(item,prop)}}</div>
+      </div>
+    </div>
+
+
+  </ion-content>
+</ion-view>
+

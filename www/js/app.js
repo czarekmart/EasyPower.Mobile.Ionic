@@ -66,6 +66,17 @@ angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.servic
           }
         }
       })
+
+      .state('app.equipmentDetail', {
+        url: '/equipmentDetail',
+        views: {
+          'mainContent': {
+            templateUrl: 'templates/equipmentDetail.html',
+            controller: 'EquipmentDetailController'
+          }
+        }
+      })
+
     ;
 
 
