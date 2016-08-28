@@ -165,7 +165,11 @@ angular.module('easyPower.controllers', [])
   .controller('IndexController', ['$scope', '$state', 'projectService', function ($scope, $state, projectService) {
 
     $scope.message = "Loading ...";
-    $scope.projects = projectService.getProjects().query();
+    projectService.waitFor(projectService.getProjects().query(),
+      function (response) {
+        $scope.projects = response;
+
+      });
     $scope.openProject = function(projectName) {
       $state.go("app.summary", {projectName: projectName});
     };
@@ -177,7 +181,10 @@ angular.module('easyPower.controllers', [])
     var projectName = $stateParams.projectName;
 
     $scope.projectName = projectName;
-    $scope.summary = projectService.getProjectSummary(projectName).query();
+    projectService.waitFor(projectService.getProjectSummary(projectName).query(),
+      function(response){
+        $scope.summary = response;
+      });
 
     $scope.openEquipment = function(eqpInfo) {
        $state.go("app.equipmentList", {projectName: projectName, eqpInfo: eqpInfo});
@@ -186,7 +193,8 @@ angular.module('easyPower.controllers', [])
   }])
 
   //========================================================================
-  .controller('EquipmentListController', ['$scope', '$state', '$stateParams', 'projectService', 'equipment',
+  .controller('EquipmentListController', [
+    '$scope', '$state', '$stateParams', 'projectService', 'equipment',
     function ($scope, $state, $stateParams, projectService, equipment) {
 
       var projectName = $stateParams.projectName;
@@ -195,8 +203,13 @@ angular.module('easyPower.controllers', [])
       $scope.projectName = projectName;
       $scope.eqpInfo = eqpInfo;
 
-      $scope.eqpList = projectService.getEquipmentItems(projectName, eqpInfo).query();
+      projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).query(),
+        function (response) {
+          $scope.eqpList = response;
+        });
+
       $scope.properties = equipment.getProperties(eqpInfo.url);
+
 
       $scope.getValue = function (item, prop) {
         return equipment.getUIValue(item, prop);
@@ -217,14 +230,18 @@ angular.module('easyPower.controllers', [])
 
       $scope.projectName = projectName;
       $scope.eqpInfo = eqpInfo;
-      $scope.item = projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId});
+
+      projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId}),
+        function (response) {
+          $scope.item = response;
+
+        });
 
       $scope.properties = equipment.getProperties(eqpInfo.url, true);
 
       $scope.getValue = function (item, prop) {
           return equipment.getUIValue(item, prop);
       };
-
     }])
 
 ;
