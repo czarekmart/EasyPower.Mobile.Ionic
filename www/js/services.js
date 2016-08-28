@@ -8,36 +8,18 @@ angular.module('easyPower.services', ['ngResource'])
   .service('projectService', ['$resource', 'baseURL', function ($resource, baseURL) {
 
     this.getProjects = function() {
+
       return $resource(baseURL + "project/:id");
     }
 
-    var currentProject;
-    var currentEquipmentInfo;
+    this.getProjectSummary = function (projectName) {
 
-    this.getCurrentProject = function() {
-      return currentProject;
+      return $resource(baseURL + "summary/:id", {dbName: projectName});
     }
 
-    this.setCurrentProject = function(project) {
-      currentProject = project;
-    }
+    this.getEquipmentItems = function(projectName, eqpInfo) {
 
-    this.getProjectSummary = function () {
-
-      var res = $resource(baseURL + "summary/:id", {dbName: currentProject});
-      return res;
-    }
-
-    this.setCurrentEquipmentInfo = function(eqpInfo) {
-      currentEquipmentInfo = eqpInfo;
-    }
-
-    this.getCurrentEquipmentInfo = function() {
-      return currentEquipmentInfo;
-    }
-
-    this.getEquipmentList = function() {
-      return $resource(baseURL + currentEquipmentInfo.url + "/:id", {dbName: currentProject});
+      return $resource(baseURL + eqpInfo.url + "/:id", {dbName: projectName});
     }
 
   }])
@@ -46,21 +28,10 @@ angular.module('easyPower.services', ['ngResource'])
   //*********************************************************************************
   .service('equipment', ['FieldEnums', function (FieldEnums) {
 
-    var currentItem;
-
-    this.setCurrentItem = function(item) {
-      currentItem = item;
-    };
-    this.getCurrentItem = function() {
-      return currentItem;
-    }
-
     this.getProperties = function(url, detail) {
 
       var statusProps = [
-        {name: "status", display: "Status", mapValue: function (eqp) {
-          return FieldEnums.getStringValue(FieldEnums.eqpStatus, eqp.status);
-        }},
+        {name: "status", display: "Status", options: FieldEnums.eqpStatus},
       ];
       var summaryProps;
       var detailProps;
@@ -68,9 +39,7 @@ angular.module('easyPower.services', ['ngResource'])
       if(url == "bus") {
         summaryProps= [
           {name: "baseKV", display: "Base KV"},
-          {name: "busType", display: "Type", mapValue : function(eqp) {
-            return FieldEnums.getStringValue(FieldEnums.busTypes, eqp.busType);
-          }},
+          {name: "busType", display: "Type", options : FieldEnums.busTypes},
         ];
 
         if(detail) {
@@ -92,25 +61,16 @@ angular.module('easyPower.services', ['ngResource'])
         ];
         if(detail) {
           detailProps = [
-            {name: "unit", display: "Unit", mapValue: function (eqp) {
-              return FieldEnums.getStringValue(FieldEnums.eqpUnits, eqp.unit);
-            }},
+            {name: "unit", display: "Unit", options: FieldEnums.eqpUnits},
             {name: "type", display: "Type"},
             {name: "length", display: "Length"},
-            {name: "material", display: "Material", mapValue: function (eqp) {
-                return FieldEnums.getStringValue(FieldEnums.cableMaterial, eqp.material);
-              }
-            },
+            {name: "material", display: "Material", options: FieldEnums.cableMaterial},
             {name: "noph", display: "No/Phase"},
             {name: "temp", display: "Temperature"},
             {name: "insulation", display: "Insulation"},
             {name: "rating", display: "Rating"},
-            {name: "raceway_type", display: "Raceway Type", mapValue: function(eqp){
-              return FieldEnums.getStringValue(FieldEnums.racewayType, eqp.raceway_type);
-            }},
-            {name: "raceway_material", display: "Raceway Material", mapValue: function(eqp){
-              return FieldEnums.getStringValue(FieldEnums.racewayMaterial, eqp.raceway_material);
-            }},
+            {name: "raceway_type", display: "Raceway Type", options: FieldEnums.racewayType},
+            {name: "raceway_material", display: "Raceway Material", options: FieldEnums.racewayMaterial},
             {name: "raceway_config", display: "Raceway Config"},
             {name: "ground_size", display: "Ground Size"},
             {name: "ground_num", display: "Ground Num"},
@@ -128,9 +88,7 @@ angular.module('easyPower.services', ['ngResource'])
 
         summaryProps = [
           {name: "con1_name", display: "Connected To"},
-          {name: "class", display: "Class", mapValue : function(eqp){
-            return FieldEnums.getStringValue(FieldEnums.loadClass, eqp["class"]);
-          }},
+          {name: "class", display: "Class", options : FieldEnums.loadClass},
           {name: "mw", display: "MW"},
           {name: "mvar", display: "MVAR"},
         ];
@@ -155,9 +113,7 @@ angular.module('easyPower.services', ['ngResource'])
           {name: "con1_name", display: "Connected To"},
           {name: "kv", display: "kV"},
           {name: "hp", display: "HP"},
-          {name: "type", display: "Load Type", mapValue: function (eqp) {
-            return FieldEnums.getStringValue(FieldEnums.motorType, eqp["type"]);
-          }},
+          {name: "type", display: "Load Type", options: FieldEnums.motorType},
         ];
 
         if(detail) {
@@ -168,16 +124,10 @@ angular.module('easyPower.services', ['ngResource'])
              {name: "motor_kva", display: "Motor KVA"},
             {name: "rpm", display: "RPM"},
             {name: "fla", display: "FLA"},
-            {name: "group", display: "Group", mapValue: function (eqp) {
-              return FieldEnums.getStringValue(FieldEnums.motorGroup, eqp.group);
-            }},
-            {name: "class", display: "Class", mapValue: function (eqp) {
-              return FieldEnums.getStringValue(FieldEnums.loadClass, eqp["class"]);
-            }},
+            {name: "group", display: "Group", options: FieldEnums.motorGroup},
+            {name: "class", display: "Class", options: FieldEnums.loadClass},
             {name: "kvahp", display: "kVA/Hp"},
-            {name: "sc_ansi_code", display: "ANSI Code", mapValue: function (eqp) {
-              return FieldEnums.getStringValue(FieldEnums.ansiCode, eqp.sc_ansi_code);
-            }},
+            {name: "sc_ansi_code", display: "ANSI Code", options: FieldEnums.ansiCode},
             {name: "sc_load_factor", display: "Connected"},
             {name: "xppdv", display: 'X"dv or Xlr or R(Ohms)'},
             {name: "dmd_factor", display: "Demand Factor"},
@@ -185,26 +135,47 @@ angular.module('easyPower.services', ['ngResource'])
             {name: "harm_r_coef", display: "Hrm RC Value"},
             {name: "harm_factor", display: "Hrm RC Factor"},
             {name: "motor_factor", display: "Motor Factor"},
-            {name: "tcc_starter_type", display: "TCC Starter", mapValue: function(eqp){
-              return FieldEnums.getStringValue(FieldEnums.tccStarterType, eqp.tcc_starter_type);
-            }},
-            {name: "starting_method", display: "TCC Starter", mapValue: function (eqp) {
-              return FieldEnums.getStringValue(FieldEnums.motorStartingMethod, eqp.starting_method);
-            }},
+            {name: "tcc_starter_type", display: "TCC Starter", options: FieldEnums.tccStarterType},
+            {name: "starting_method", display: "TCC Starter", options: FieldEnums.motorStartingMethod},
             {name: "service_factor", display: "Service Factor"},
 
           ];
         }
       }
-      var props;
       if(detailProps) {
-        props = statusProps.concat(summaryProps, detailProps);
+        return statusProps.concat(summaryProps, detailProps);
       }
       else {
-        props = statusProps.concat(summaryProps);
+        return statusProps.concat(summaryProps);
       }
-      return props;
-    }
+    };
+
+    //*************************************************************
+    this.getRawValueFromUIValue = function (uiValue, prop) {
+      if (prop.options) {
+        for (var key in prop.options) {
+          if ((prop.options)[key] == uiValue) {
+            return key;
+          }
+        }
+        return undefined;
+      }
+      else {
+        return uiValue;
+      }
+    };
+    //********************************************************
+    this.getUIValueFromRawValue = function (rawValue, prop) {
+      return prop.options ? prop.options[rawValue] : rawValue;
+    };
+    //********************************************************
+    this.getUIValue = function (item, prop) {
+      return this.getUIValueFromRawValue(item[prop.name], prop);
+    };
+    //*************************************************************
+    this.getOptions = function (prop) {
+      return prop.options ? Object.values(prop.options) : [];
+    };
 
   }])
 

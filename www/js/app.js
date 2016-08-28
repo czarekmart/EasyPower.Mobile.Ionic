@@ -49,16 +49,23 @@ angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.servic
 
       .state('app.summary', {
         url: '/summary',
+        params: {
+          projectName: null,
+        },
         views: {
           'mainContent': {
             templateUrl: 'templates/summary.html',
-            controller: 'SummaryController'
+            controller: 'SummaryController',
           }
         }
       })
 
       .state('app.equipmentList', {
         url: '/equipmentList',
+        params: {
+          projectName: null,
+          eqpInfo: null,
+        },
         views: {
           'mainContent': {
             templateUrl: 'templates/equipmentList.html',
@@ -69,6 +76,11 @@ angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.servic
 
       .state('app.equipmentDetail', {
         url: '/equipmentDetail',
+        params: {
+          projectName: null,
+          eqpInfo: null,
+          itemId: null,
+        },
         views: {
           'mainContent': {
             templateUrl: 'templates/equipmentDetail.html',

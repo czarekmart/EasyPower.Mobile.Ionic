@@ -143,20 +143,6 @@ angular.module('easyPower.services')
       1: "Slip",
     };
 
-    //*************************************************************
-    this.getEnumValue = function(enumObject, stringValue) {
-      for (var key in enumObject) {
-        if(enumObject[key] == stringValue) {
-          return key;
-        }
-      }
-      return undefined;
-    };
-    //*************************************************************
-    this.getStringValue = function(enumObject, enumValue) {
-      return enumObject[enumValue];
-    };
-
   }])
 
 

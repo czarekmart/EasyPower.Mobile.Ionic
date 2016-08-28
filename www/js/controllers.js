@@ -166,67 +166,64 @@ angular.module('easyPower.controllers', [])
 
     $scope.message = "Loading ...";
     $scope.projects = projectService.getProjects().query();
-    $scope.openProject = function(project) {
-      projectService.setCurrentProject(project);
-      $state.go("app.summary");
+    $scope.openProject = function(projectName) {
+      $state.go("app.summary", {projectName: projectName});
     };
   }])
 
   //========================================================================
-  .controller('SummaryController', ['$scope', '$state', 'projectService', function ($scope, $state, projectService) {
+  .controller('SummaryController', ['$scope', '$state', '$stateParams', 'projectService', function ($scope, $state, $stateParams, projectService) {
 
-    $scope.summary = projectService.getProjectSummary().query();
-    $scope.projectName = projectService.getCurrentProject();
+    var projectName = $stateParams.projectName;
 
-    $scope.openEquipment = function(eqp) {
-      projectService.setCurrentEquipmentInfo(eqp);
-      $state.go("app.equipmentList");
+    $scope.projectName = projectName;
+    $scope.summary = projectService.getProjectSummary(projectName).query();
+
+    $scope.openEquipment = function(eqpInfo) {
+       $state.go("app.equipmentList", {projectName: projectName, eqpInfo: eqpInfo});
     }
 
   }])
 
   //========================================================================
-  .controller('EquipmentListController', ['$scope', '$state', 'projectService', 'equipment',
-    function ($scope, $state, projectService, equipment) {
+  .controller('EquipmentListController', ['$scope', '$state', '$stateParams', 'projectService', 'equipment',
+    function ($scope, $state, $stateParams, projectService, equipment) {
 
-      $scope.projectName = projectService.getCurrentProject();
-      $scope.eqpInfo = projectService.getCurrentEquipmentInfo();
-      $scope.eqpList = projectService.getEquipmentList().query();
-      $scope.properties = equipment.getProperties($scope.eqpInfo.url);
+      var projectName = $stateParams.projectName;
+      var eqpInfo = $stateParams.eqpInfo;
 
-      $scope.getValue = function (eqp, prop) {
-        if(prop.mapValue) {
-          return prop.mapValue(eqp);
-        }
-        else {
-          return eqp[prop.name];
-        }
-      }
+      $scope.projectName = projectName;
+      $scope.eqpInfo = eqpInfo;
 
-      $scope.selectItemForDetail = function(eqpItem) {
-        equipment.setCurrentItem(eqpItem);
-        $state.go("app.equipmentDetail");
-      }
+      $scope.eqpList = projectService.getEquipmentItems(projectName, eqpInfo).query();
+      $scope.properties = equipment.getProperties(eqpInfo.url);
+
+      $scope.getValue = function (item, prop) {
+        return equipment.getUIValue(item, prop);
+      };
+      $scope.selectItemForDetail = function (eqpItem) {
+        $state.go("app.equipmentDetail", {projectName: projectName, eqpInfo: eqpInfo, itemId: eqpItem.id});
+      };
 
   }])
 
   //========================================================================
-  .controller('EquipmentDetailController', ['$scope', '$state', 'projectService', 'equipment',
-    function ($scope, $state, projectService, equipment) {
+  .controller('EquipmentDetailController', ['$scope', '$state', '$stateParams', 'projectService', 'equipment',
+    function ($scope, $state, $stateParams, projectService, equipment) {
 
-      $scope.projectName = projectService.getCurrentProject();
-      $scope.eqpInfo = projectService.getCurrentEquipmentInfo();
-      $scope.properties = equipment.getProperties($scope.eqpInfo.url, true);
-      $scope.item = equipment.getCurrentItem();
+      var projectName = $stateParams.projectName;
+      var eqpInfo = $stateParams.eqpInfo;
+      var itemId = $stateParams.itemId;
+
+      $scope.projectName = projectName;
+      $scope.eqpInfo = eqpInfo;
+      $scope.item = projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId});
+
+      $scope.properties = equipment.getProperties(eqpInfo.url, true);
 
       $scope.getValue = function (item, prop) {
-        if (prop.mapValue) {
-          return prop.mapValue(item);
-        }
-        else {
-          return item[prop.name];
-        }
-      }
+          return equipment.getUIValue(item, prop);
+      };
 
     }])
 
