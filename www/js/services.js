@@ -171,6 +171,7 @@ angular.module('easyPower.services', ['ngResource'])
 
     //*************************************************************
     this.getRawValueFromUIValue = function (uiValue, prop) {
+      if(!uiValue) return undefined;
       if (prop.options) {
         for (var key in prop.options) {
           if ((prop.options)[key] == uiValue) {
@@ -185,10 +186,12 @@ angular.module('easyPower.services', ['ngResource'])
     };
     //********************************************************
     this.getUIValueFromRawValue = function (rawValue, prop) {
+      if(!rawValue) return "";
       return prop.options ? prop.options[rawValue] : rawValue;
     };
     //********************************************************
     this.getUIValue = function (item, prop) {
+      if(!item) return "";
       return this.getUIValueFromRawValue(item[prop.name], prop);
     };
     //*************************************************************

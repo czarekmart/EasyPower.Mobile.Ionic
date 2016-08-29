@@ -228,6 +228,7 @@ angular.module('easyPower.controllers', [])
       var eqpInfo = $stateParams.eqpInfo;
       var itemId = $stateParams.itemId;
 
+
       $scope.projectName = projectName;
       $scope.eqpInfo = eqpInfo;
 
@@ -242,6 +243,7 @@ angular.module('easyPower.controllers', [])
       $scope.getValue = function (item, prop) {
           return equipment.getUIValue(item, prop);
       };
+
     }])
 
 ;
