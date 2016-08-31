@@ -51,6 +51,15 @@ angular.module('easyPower.services')
       68: "Cradle",
     };
 
+    this.cableType = {
+      "<None>": "<None>",
+      "1/C": "1/C",
+      "3/C": "3/C",
+      "IAA": "IAA",
+      "IAS": "IAS",
+      "MAC": "MAC"
+    };
+
     this.conductorForm = {
       65: "Round",
       66: "Sectored",

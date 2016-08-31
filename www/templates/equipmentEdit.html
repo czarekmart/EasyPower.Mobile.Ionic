@@ -1,0 +1,46 @@
+<ion-view view-title="">
+  <ion-content>
+
+    <button class="button button-block button-stable">
+      {{itemName}}
+    </button>
+
+    <form id="editItem" name="editItem" ng-submit="commitEdit()">
+      <div class="list">
+
+        <label class="item row" , ng-repeat="value in values" style="padding-top: 0; padding-bottom: 0;">
+          <div class="col col-40" style="padding: 4px; font-size: smaller">{{value.caption}}</div>
+          <input ng-if="value.edit" class="col col-60" type="text" ng-model="value.rawValue"
+                 placeholder="{{value.caption}}">
+          <select ng-if="value.options" ng-model="value.rawValue" class="col col-60">
+            <option ng-repeat="opt in value.options" value="{{opt.key}}" ng-selected="value.rawValue==opt.key">
+              {{opt.value}}
+            </option>
+          </select>
+        </label>
+        <!--
+        <label class="item", ng-repeat="value in values" style="padding-top: 0; padding-bottom: 0;">
+          <div class="row" style="padding-top: 0; padding-bottom: 0;">
+            <div class="col col-30" style="padding: 4px; font-size: smaller">{{value.caption}}</div>
+            <div class="col col-30" style="padding: 4px; font-size: smaller">{{value.uiValue}}</div>
+            <input class="col col-40 dark-border" type="text" ng-model="value.uiValue">
+          </div>
+        </label>
+        -->
+
+      </div>
+    </form>
+    <!--
+    <div class="item card" style="padding: 0; margin-top: 0;margin-bottom: 0">
+      <button class="button button-small button-stable button-block">{{item.name}}</button>
+      <div class="row" ng-repeat="prop in properties" style="padding: 0">
+        <div class="col col-40" style="padding: 4px; font-size: smaller">{{prop.display}}</div>
+        <div class="col col-60" style="padding: 4px; font-size: smaller">{{getValue(item,prop)}}</div>
+      </div>
+    </div>
+    -->
+
+
+  </ion-content>
+</ion-view>
+

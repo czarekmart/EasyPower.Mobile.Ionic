@@ -89,6 +89,20 @@ angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.servic
         }
       })
 
+      .state('app.equipmentEdit', {
+        url: '/equipmentEdit',
+        params: {
+          projectName: null,
+          eqpInfo: null,
+          itemId: null,
+        },
+        views: {
+          'mainContent': {
+            templateUrl: 'templates/equipmentEdit.html',
+            controller: 'EquipmentDetailController'
+          }
+        }
+      })
     ;
 
 

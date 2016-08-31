@@ -176,26 +176,27 @@ angular.module('easyPower.controllers', [])
   }])
 
   //========================================================================
-  .controller('SummaryController', ['$scope', '$state', '$stateParams', 'projectService', function ($scope, $state, $stateParams, projectService) {
+  .controller('SummaryController', ['$scope', '$state', '$stateParams', 'projectService',
+    function ($scope, $state, $stateParams, projectService) {
 
-    var projectName = $stateParams.projectName;
+      var projectName = $stateParams.projectName;
 
-    $scope.projectName = projectName;
-    projectService.waitFor(projectService.getProjectSummary(projectName).query(),
-      function(response){
-        $scope.summary = response;
-      });
+      $scope.projectName = projectName;
+      projectService.waitFor(projectService.getProjectSummary(projectName).query(),
+        function (response) {
+          $scope.summary = response;
+        });
 
-    $scope.openEquipment = function(eqpInfo) {
-       $state.go("app.equipmentList", {projectName: projectName, eqpInfo: eqpInfo});
-    }
+      $scope.openEquipment = function (eqpInfo) {
+        $state.go("app.equipmentList", {projectName: projectName, eqpInfo: eqpInfo});
+      }
 
-  }])
+    }])
 
   //========================================================================
   .controller('EquipmentListController', [
-    '$scope', '$state', '$stateParams', 'projectService', 'equipment',
-    function ($scope, $state, $stateParams, projectService, equipment) {
+    '$scope', '$state', '$stateParams', 'projectService', 'schemaService',
+    function ($scope, $state, $stateParams, projectService, schemaService) {
 
       var projectName = $stateParams.projectName;
       var eqpInfo = $stateParams.eqpInfo;
@@ -208,11 +209,11 @@ angular.module('easyPower.controllers', [])
           $scope.eqpList = response;
         });
 
-      $scope.properties = equipment.getProperties(eqpInfo.url);
+      $scope.properties = schemaService.getProperties(eqpInfo.url);
 
 
       $scope.getValue = function (item, prop) {
-        return equipment.getUIValue(item, prop);
+        return schemaService.getUIValue(item, prop);
       };
       $scope.selectItemForDetail = function (eqpItem) {
         $state.go("app.equipmentDetail", {projectName: projectName, eqpInfo: eqpInfo, itemId: eqpItem.id});
@@ -221,8 +222,63 @@ angular.module('easyPower.controllers', [])
   }])
 
   //========================================================================
-  .controller('EquipmentDetailController', ['$scope', '$state', '$stateParams', 'projectService', 'equipment',
-    function ($scope, $state, $stateParams, projectService, equipment) {
+  .controller('EquipmentDetailController', ['$scope', '$state', '$stateParams', 'projectService', 'schemaService',
+    function ($scope, $state, $stateParams, projectService, schemaService) {
+
+      var projectName = $stateParams.projectName;
+      var eqpInfo = $stateParams.eqpInfo;
+      var itemId = $stateParams.itemId;
+
+
+      $scope.projectName = projectName;
+      $scope.eqpInfo = eqpInfo;
+      $scope.itemName = "";
+      $scope.values = [];
+
+      var item;
+      projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId}),
+        function (response) {
+          item = response;
+          $scope.itemName = item.name;
+          $scope.values = schemaService.getProperties(eqpInfo.url, true).map(function(prop){
+            var p = {
+              rawValue: item[prop.name],
+              uiValue: schemaService.getUIValue(item, prop),
+              caption: prop.display,
+            };
+            if(prop.boolean) {
+              p.boolean = true
+            }
+            else if(prop.options) {
+              p.options = schemaService.getSelectOptions(prop)
+            }
+            else {
+              p.edit = true;
+            }
+            return p;
+          });
+        });
+
+      $scope.getValue = function (prop) {
+          if(item) {
+            return schemaService.getUIValue(item, prop);
+          }
+          else {
+            return "";
+          }
+      };
+
+      $scope.editItem = function() {
+        if(item) {
+          $state.go("app.equipmentEdit", {projectName: projectName, eqpInfo: eqpInfo, itemId: item.id});
+        }
+      }
+
+    }])
+
+  //========================================================================
+  .controller('EquipmentEditController', ['$scope', '$state', '$stateParams', 'projectService', 'schemaService',
+    function ($scope, $state, $stateParams, projectService, schemaService) {
 
       var projectName = $stateParams.projectName;
       var eqpInfo = $stateParams.eqpInfo;
@@ -238,10 +294,15 @@ angular.module('easyPower.controllers', [])
 
         });
 
-      $scope.properties = equipment.getProperties(eqpInfo.url, true);
+      var editProps = schemaService.getProperties(eqpInfo.url, true).map(function(prop){
+        ;
+
+      });
+
+      $scope.properties = schemaService.getProperties(eqpInfo.url, true);
 
       $scope.getValue = function (item, prop) {
-          return equipment.getUIValue(item, prop);
+        return schemaService.getUIValue(item, prop);
       };
 
     }])
