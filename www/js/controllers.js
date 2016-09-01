@@ -234,16 +234,22 @@ angular.module('easyPower.controllers', [])
       $scope.eqpInfo = eqpInfo;
       $scope.itemName = "";
       $scope.values = [];
+      $scope.edit = false;
+
+      var selectedTab = 'data';
 
       var item;
       projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId}),
         function (response) {
           item = response;
           $scope.itemName = item.name;
-          $scope.values = schemaService.getProperties(eqpInfo.url, true).map(function(prop){
+          $scope.values = [{
+            value: item.name,
+            caption: "Id Name",
+            edit: true
+          }].concat( schemaService.getProperties(eqpInfo.url, true).map(function(prop){
             var p = {
-              rawValue: item[prop.name],
-              uiValue: schemaService.getUIValue(item, prop),
+              value: schemaService.getUIValue(item, prop),
               caption: prop.display,
             };
             if(prop.boolean) {
@@ -256,22 +262,22 @@ angular.module('easyPower.controllers', [])
               p.edit = true;
             }
             return p;
-          });
+          }));
         });
 
-      $scope.getValue = function (prop) {
-          if(item) {
-            return schemaService.getUIValue(item, prop);
-          }
-          else {
-            return "";
-          }
-      };
 
-      $scope.editItem = function() {
-        if(item) {
-          $state.go("app.equipmentEdit", {projectName: projectName, eqpInfo: eqpInfo, itemId: item.id});
-        }
+      $scope.toggleEdit = function() {
+        //if(item) {
+        //  $state.go("app.equipmentEdit", {projectName: projectName, eqpInfo: eqpInfo, itemId: item.id});
+        //}
+        $scope.edit = !$scope.edit;
+      }
+
+      $scope.selectTab = function(tab) {
+        selectedTab = tab;
+      };
+      $scope.isTabSelected = function (tab) {
+        return selectedTab === tab;
       }
 
     }])

@@ -1,32 +1,62 @@
 <ion-view view-title="">
-  <ion-content>
 
-    <button class="button button-block button-stable" ng-click="editItem()">
-      {{itemName}}
-    </button>
+  <ion-nav-buttons side="secondary">
+    <div class="buttons">
+      <button class="button button-icon icon" ng-class="edit?'ion-ios-checkmark-outline':'ion-ios-compose-outline'" ng-click="toggleEdit()"></button>
+    </div>
+  </ion-nav-buttons>
 
-    <ion-list>
+  <!-- ion-ios-compose-outline  ion-ios-checkmark-outline / ion-checkmark ion-edit -->
+
+  <ion-content class="has-footer">
+
+    <ion-list ng-if="isTabSelected('data')">
 
       <ion-item ng-repeat="value in values" style="padding-top: 0; padding-bottom: 0;">
-        <div class="row" style="padding-top: 0; padding-bottom: 0;">
-          <div class="col col-40" style="padding: 4px; font-size: smaller">{{value.caption}}</div>
-          <div class="col col-60" style="padding: 4px; font-size: smaller">{{value.uiValue}}</div>
+        <div class="row" style="height: 40px">
+          <span class="col col-50">{{value.caption}}</span>
+
+          <!-- Browse part -->
+          <span ng-if="!edit" class="col col-50">{{value.value}}</span>
+
+          <!-- Edit part -->
+          <label ng-if="edit" class="col col-50" style="padding: 0" >
+            <input ng-if="value.edit" type="text" ng-model="value.value" style="background-color: beige">
+            <select ng-if="value.options" ng-model="value.value" class="col col-50" style="border: none; background-color: beige">
+              <option ng-repeat="opt in value.options" value="{{opt}}">{{opt}}</option>
+            </select>
+
+          </label>
+
         </div>
       </ion-item>
 
     </ion-list>
 
-    <!--
-    <div class="item card" style="padding: 0; margin-top: 0;margin-bottom: 0">
-      <button class="button button-small button-stable button-block">{{item.name}}</button>
-      <div class="row" ng-repeat="prop in properties" style="padding: 0">
-        <div class="col col-40" style="padding: 4px; font-size: smaller">{{prop.display}}</div>
-        <div class="col col-60" style="padding: 4px; font-size: smaller">{{getValue(item,prop)}}</div>
-      </div>
-    </div>
-    -->
+    <div ng-if="isTabSelected('comments')"></div>
+    <div ng-if="isTabSelected('gallery')"></div>
+    <div ng-if="isTabSelected('location')"></div>
 
 
   </ion-content>
+
+
+  <ion-footer-bar style="padding: 0">
+    <div class="tabs tabs-striped">
+      <a class="tab-item" ng-class="{active:isTabSelected('data')}" ng-click="selectTab('data')">
+        Data
+      </a>
+      <a class="tab-item" ng-class="{active:isTabSelected('comments')}" ng-click="selectTab('comments')">
+        Comments
+      </a>
+      <a class="tab-item" ng-class="{active:isTabSelected('gallery')}" ng-click="selectTab('gallery')">
+        Gallery
+      </a>
+      <a class="tab-item" ng-class="{active:isTabSelected('location')}" ng-click="selectTab('location')">
+        Location
+      </a>
+    </div>
+  </ion-footer-bar>
+
 </ion-view>
 

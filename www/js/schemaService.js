@@ -169,7 +169,7 @@ angular.module('easyPower.services')
       if (prop.options) {
         var opts = [];
         for (var key in prop.options) {
-          opts.push({key: key, value: (prop.options)[key]});
+          opts.push((prop.options)[key]);
         }
         return opts;
       }
