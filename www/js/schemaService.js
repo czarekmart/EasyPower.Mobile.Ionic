@@ -111,7 +111,14 @@ angular.module('easyPower.services')
     //********************************************************
     this.getProperties = function (url, detail) {
 
+      // Object description:
+      // name: the property name. Must match JsonProperty from the server
+      // display: UI-friendly property description
+      // options [optional]: array of options if it's numeric field representing enum values
+      // boolean [optional]: true if the field can be treated as a boolean value.
+
       var headerProps = [
+        {name: "name", display: "Id Name"},
         {name: "status", display: "Status", options: FieldEnums.eqpStatus, boolean: true},
       ];
       if (url == "bus") {

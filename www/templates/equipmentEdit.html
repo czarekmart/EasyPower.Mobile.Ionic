@@ -1,46 +1,76 @@
 <ion-view view-title="">
-  <ion-content>
 
-    <button class="button button-block button-stable">
-      {{itemName}}
-    </button>
-
-    <form id="editItem" name="editItem" ng-submit="commitEdit()">
-      <div class="list">
-
-        <label class="item row" , ng-repeat="value in values" style="padding-top: 0; padding-bottom: 0;">
-          <div class="col col-40" style="padding: 4px; font-size: smaller">{{value.caption}}</div>
-          <input ng-if="value.edit" class="col col-60" type="text" ng-model="value.rawValue"
-                 placeholder="{{value.caption}}">
-          <select ng-if="value.options" ng-model="value.rawValue" class="col col-60">
-            <option ng-repeat="opt in value.options" value="{{opt.key}}" ng-selected="value.rawValue==opt.key">
-              {{opt.value}}
-            </option>
-          </select>
-        </label>
-        <!--
-        <label class="item", ng-repeat="value in values" style="padding-top: 0; padding-bottom: 0;">
-          <div class="row" style="padding-top: 0; padding-bottom: 0;">
-            <div class="col col-30" style="padding: 4px; font-size: smaller">{{value.caption}}</div>
-            <div class="col col-30" style="padding: 4px; font-size: smaller">{{value.uiValue}}</div>
-            <input class="col col-40 dark-border" type="text" ng-model="value.uiValue">
-          </div>
-        </label>
-        -->
-
-      </div>
-    </form>
-    <!--
-    <div class="item card" style="padding: 0; margin-top: 0;margin-bottom: 0">
-      <button class="button button-small button-stable button-block">{{item.name}}</button>
-      <div class="row" ng-repeat="prop in properties" style="padding: 0">
-        <div class="col col-40" style="padding: 4px; font-size: smaller">{{prop.display}}</div>
-        <div class="col col-60" style="padding: 4px; font-size: smaller">{{getValue(item,prop)}}</div>
-      </div>
+  <ion-nav-buttons side="secondary">
+    <div class="buttons">
+      <button class="button button-icon icon" ng-class="edit?'ion-ios-checkmark-outline':'ion-ios-compose-outline'"
+              ng-click="toggleEdit()"></button>
     </div>
-    -->
+  </ion-nav-buttons>
 
+  <!-- ion-ios-compose-outline  ion-ios-checkmark-outline / ion-checkmark ion-edit -->
+
+  <ion-content class="has-footer">
+
+
+    <div class="list">
+
+
+      <label class="item item-input" ng-repeat="value in values">
+        <span class="input-label">{{value.caption}}</span>
+
+        <span ng-show="!edit">{{value.value}}</span>
+
+        <input ng-show="edit && value.edit" type="text" ng-model="value.value">
+        <select ng-show="edit && value.options" ng-model="value.value" style="border: none;">
+          <option ng-repeat="opt in value.options" value="{{opt}}">{{opt}}</option>
+        </select>
+
+      </label>
+
+      <!--
+      <ion-item ng-repeat="value in values" style="padding-top: 0; padding-bottom: 0;">
+        <div class="row" style="height: 40px">
+          <span class="col col-50">{{value.caption}}</span>
+
+
+          <span ng-if="!edit" class="col col-50">{{value.value}}</span>
+
+
+          <label ng-if="edit" class="col col-50" style="padding: 0" >
+            <input ng-if="value.edit" type="text" ng-model="value.value" style="background-color: beige; margin-right: 0">
+            <select ng-if="value.options" ng-model="value.value" style="border: none; background-color: beige; width: 100%">
+              <option ng-repeat="opt in value.options" value="{{opt}}">{{opt}}</option>
+            </select>
+
+          </label>
+
+        </div>
+      </ion-item>
+      -->
+
+
+    </div>
 
   </ion-content>
+
+
+  <ion-footer-bar style="padding: 0">
+    <div class="tabs tabs-striped">
+      <a class="tab-item" ng-class="{active:isTabSelected('data')}" ng-click="selectTab('data')">
+        Data
+      </a>
+
+      <a class="tab-item" ng-class="{active:isTabSelected('notes')}" ng-click="selectTab('notes')">
+        Notes
+      </a>
+      <a class="tab-item" ng-class="{active:isTabSelected('gallery')}" ng-click="selectTab('gallery')">
+        Gallery
+      </a>
+      <a class="tab-item" ng-class="{active:isTabSelected('location')}" ng-click="selectTab('location')">
+        Location
+      </a>
+    </div>
+  </ion-footer-bar>
+
 </ion-view>
 

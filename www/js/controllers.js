@@ -232,8 +232,8 @@ angular.module('easyPower.controllers', [])
 
       $scope.projectName = projectName;
       $scope.eqpInfo = eqpInfo;
-      $scope.itemName = "";
       $scope.values = [];
+      $scope.comments = {};
       $scope.edit = false;
 
       var selectedTab = 'data';
@@ -242,12 +242,8 @@ angular.module('easyPower.controllers', [])
       projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId}),
         function (response) {
           item = response;
-          $scope.itemName = item.name;
-          $scope.values = [{
-            value: item.name,
-            caption: "Id Name",
-            edit: true
-          }].concat( schemaService.getProperties(eqpInfo.url, true).map(function(prop){
+          $scope.comments = {text: item.comments}; // item.comments;
+          $scope.values = schemaService.getProperties(eqpInfo.url, true).map(function(prop){
             var p = {
               value: schemaService.getUIValue(item, prop),
               caption: prop.display,
@@ -262,7 +258,7 @@ angular.module('easyPower.controllers', [])
               p.edit = true;
             }
             return p;
-          }));
+          });
         });
 
 
@@ -278,6 +274,11 @@ angular.module('easyPower.controllers', [])
       };
       $scope.isTabSelected = function (tab) {
         return selectedTab === tab;
+      }
+
+      $scope.checkScope = function() {
+        console.log("====", '$scope', $scope);
+        console.log("====", '$scope.parent', $scope.$parent);
       }
 
     }])

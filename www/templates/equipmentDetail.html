@@ -10,32 +10,41 @@
 
   <ion-content class="has-footer">
 
-    <ion-list ng-if="isTabSelected('data')">
 
-      <ion-item ng-repeat="value in values" style="padding-top: 0; padding-bottom: 0;">
-        <div class="row" style="height: 40px">
-          <span class="col col-50">{{value.caption}}</span>
+    <div class="list" ng-if="isTabSelected('data')">
 
-          <!-- Browse part -->
-          <span ng-if="!edit" class="col col-50">{{value.value}}</span>
 
-          <!-- Edit part -->
-          <label ng-if="edit" class="col col-50" style="padding: 0" >
-            <input ng-if="value.edit" type="text" ng-model="value.value" style="background-color: beige">
-            <select ng-if="value.options" ng-model="value.value" class="col col-50" style="border: none; background-color: beige">
-              <option ng-repeat="opt in value.options" value="{{opt}}">{{opt}}</option>
-            </select>
+      <label class="item item-input" ng-repeat="value in values">
+        <span class="input-label">{{value.caption}}</span>
 
-          </label>
+        <span ng-if="!edit">{{value.value}}</span>
 
-        </div>
-      </ion-item>
+        <input ng-if="edit && value.edit" type="text" ng-model="value.value">
+        <select ng-if="edit && value.options" ng-model="value.value" style="border: none;">
+          <option ng-repeat="opt in value.options" value="{{opt}}">{{opt}}</option>
+        </select>
 
-    </ion-list>
+      </label>
 
-    <div ng-if="isTabSelected('comments')"></div>
-    <div ng-if="isTabSelected('gallery')"></div>
-    <div ng-if="isTabSelected('location')"></div>
+    </div>
+
+    <div class="list" ng-if="isTabSelected('notes')">
+
+      <label ng-if="edit" class="item item-input" style="height: 100%">
+        <textarea type="text" ng-model="comments.text" placeholder="Enter notes..." rows="80"></textarea>
+      </label>
+
+      <p ng-if="!edit" style="padding: 4px">{{comments.text}}</p>
+
+    </div>
+
+    <div ng-if="isTabSelected('gallery')">
+
+    </div>
+
+    <div ng-if="isTabSelected('location')">
+
+    </div>
 
 
   </ion-content>
@@ -46,8 +55,8 @@
       <a class="tab-item" ng-class="{active:isTabSelected('data')}" ng-click="selectTab('data')">
         Data
       </a>
-      <a class="tab-item" ng-class="{active:isTabSelected('comments')}" ng-click="selectTab('comments')">
-        Comments
+      <a class="tab-item" ng-class="{active:isTabSelected('notes')}" ng-click="selectTab('notes')">
+        Notes
       </a>
       <a class="tab-item" ng-class="{active:isTabSelected('gallery')}" ng-click="selectTab('gallery')">
         Gallery
