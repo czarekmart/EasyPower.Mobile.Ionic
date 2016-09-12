@@ -6,6 +6,44 @@ angular.module('easyPower.services', ['ngResource'])
   // http://easypowermockapi.azurewebsites.net/api/
   // http://localhost:41472/api/
 
+  .service('Utils', ['$ionicLoading', function($ionicLoading){
+
+    //****************************************************
+    this.startWait = function() {
+      $ionicLoading.show({
+        template: '<ion-spinner></ion-spinner> Loading ...',
+        showDelay: 100,
+        animation: 'fade-in',
+        showBackdrop: true
+      });
+    }
+
+    this.stopWait = function() {
+      $ionicLoading.hide();
+    }
+
+    //****************************************************
+    this.waitFor = function (promise, onSuccess, onError) {
+
+      this.startWait();
+      promise.$promise.then(function (response) {
+        if (onSuccess) {
+          onSuccess(response);
+        }
+        this.stopWait();
+
+      }, function (response) {
+        this.stopWait();
+        if (onError) {
+          onError(response);
+        }
+
+      });
+
+    }
+
+  }])
+
 
   //*********************************************************************************
   .service('projectService', ['$resource', 'baseURL', '$ionicLoading', function ($resource, baseURL, $ionicLoading) {
@@ -23,25 +61,6 @@ angular.module('easyPower.services', ['ngResource'])
     this.getEquipmentItems = function(projectName, eqpInfo) {
 
       return $resource(baseURL + eqpInfo.url + "/:id", {dbName: projectName});
-    }
-
-    this.waitFor = function(promise, onSuccess, onError) {
-
-      $ionicLoading.show({template: '<ion-spinner icon="ios"></ion-spinner>', delay:500});
-      promise.$promise.then(function(response) {
-        $ionicLoading.hide();
-        if(onSuccess) {
-          onSuccess(response);
-        }
-
-      }, function(response) {
-        $ionicLoading.hide();
-        if(onError) {
-          onError(response);
-        }
-
-      });
-
     }
 
   }])

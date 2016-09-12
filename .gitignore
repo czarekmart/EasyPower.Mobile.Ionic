@@ -6,6 +6,7 @@ platforms/
 plugins/
 
 # Directory-based project format:
+*.log
 .idea
 hooks
 plugins

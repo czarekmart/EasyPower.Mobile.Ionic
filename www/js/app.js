@@ -1,7 +1,7 @@
 
-angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.services'])
+angular.module('easyPower', ['ionic', 'ngCordova', 'easyPower.controllers', 'easyPower.services'])
 
-  .run(function ($ionicPlatform, $rootScope, $ionicLoading) {
+  .run(function ($ionicPlatform, $rootScope, $ionicLoading, $cordovaSplashscreen, $timeout) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -14,6 +14,9 @@ angular.module('easyPower', ['ionic', 'easyPower.controllers', 'easyPower.servic
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
+      $timeout(function () {
+        if($cordovaSplashscreen) $cordovaSplashscreen.hide();
+      }, 3000);
     });
 
     $rootScope.$on('loading:show', function () {

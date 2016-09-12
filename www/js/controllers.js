@@ -164,29 +164,39 @@ angular.module('easyPower.controllers', [])
   }])
 
   //========================================================================
-  .controller('IndexController', ['$scope', '$state', 'projectService', function ($scope, $state, projectService) {
+  .controller('IndexController', ['$scope', '$state', 'projectService', 'Utils', function ($scope, $state, projectService, Utils) {
 
-    $scope.message = "Loading ...";
-    projectService.waitFor(projectService.getProjects().query(),
+    Utils.startWait();
+    projectService.getProjects().query(
       function (response) {
         $scope.projects = response;
-
+        Utils.stopWait();
+      },
+      function (response) {
+        Utils.stopWait();
       });
-    $scope.openProject = function(projectName) {
+
+    $scope.openProject = function (projectName) {
       $state.go("app.summary", {projectName: projectName});
     };
   }])
 
   //========================================================================
-  .controller('SummaryController', ['$scope', '$state', '$stateParams', 'projectService',
-    function ($scope, $state, $stateParams, projectService) {
+  .controller('SummaryController', ['$scope', '$state', '$stateParams', 'projectService', 'Utils',
+    function ($scope, $state, $stateParams, projectService, Utils) {
 
       var projectName = $stateParams.projectName;
 
       $scope.projectName = projectName;
-      projectService.waitFor(projectService.getProjectSummary(projectName).query(),
+
+      Utils.startWait();
+      projectService.getProjectSummary(projectName).query(
         function (response) {
           $scope.summary = response;
+          Utils.stopWait();
+        },
+        function (response) {
+          Utils.stopWait();
         });
 
       $scope.openEquipment = function (eqpInfo) {
@@ -197,8 +207,8 @@ angular.module('easyPower.controllers', [])
 
   //========================================================================
   .controller('EquipmentListController', [
-    '$scope', '$state', '$stateParams', 'projectService', 'schemaService',
-    function ($scope, $state, $stateParams, projectService, schemaService) {
+    '$scope', '$state', '$stateParams', 'projectService', 'schemaService', 'Utils',
+    function ($scope, $state, $stateParams, projectService, schemaService, Utils) {
 
       var projectName = $stateParams.projectName;
       var eqpInfo = $stateParams.eqpInfo;
@@ -206,10 +216,16 @@ angular.module('easyPower.controllers', [])
       $scope.projectName = projectName;
       $scope.eqpInfo = eqpInfo;
 
-      projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).query(),
+      Utils.startWait();
+      projectService.getEquipmentItems(projectName, eqpInfo).query(
         function (response) {
           $scope.eqpList = response;
+          Utils.stopWait();
+        },
+        function (response) {
+          Utils.stopWait();
         });
+
 
       $scope.properties = schemaService.getProperties(eqpInfo.url);
 
@@ -224,8 +240,8 @@ angular.module('easyPower.controllers', [])
   }])
 
   //========================================================================
-  .controller('EquipmentDetailController', ['$scope', '$state', '$stateParams', 'projectService', 'schemaService',
-    function ($scope, $state, $stateParams, projectService, schemaService) {
+  .controller('EquipmentDetailController', ['$scope', '$state', '$stateParams', 'projectService', 'schemaService', 'Utils',
+    function ($scope, $state, $stateParams, projectService, schemaService, Utils) {
 
       var projectName = $stateParams.projectName;
       var eqpInfo = $stateParams.eqpInfo;
@@ -241,19 +257,21 @@ angular.module('easyPower.controllers', [])
       var selectedTab = 'data';
 
       var item;
-      projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId}),
+
+      Utils.startWait();
+      projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId},
         function (response) {
           item = response;
           $scope.comments = {text: item.comments}; // item.comments;
-          $scope.values = schemaService.getProperties(eqpInfo.url, true).map(function(prop){
+          $scope.values = schemaService.getProperties(eqpInfo.url, true).map(function (prop) {
             var p = {
               value: schemaService.getUIValue(item, prop),
               caption: prop.display,
             };
-            if(prop.boolean) {
+            if (prop.boolean) {
               p.boolean = true
             }
-            else if(prop.options) {
+            else if (prop.options) {
               p.options = schemaService.getSelectOptions(prop)
             }
             else {
@@ -261,58 +279,23 @@ angular.module('easyPower.controllers', [])
             }
             return p;
           });
+          Utils.stopWait();
+        },
+        function (response) {
+          Utils.stopWait();
         });
 
 
-      $scope.toggleEdit = function() {
-        //if(item) {
-        //  $state.go("app.equipmentEdit", {projectName: projectName, eqpInfo: eqpInfo, itemId: item.id});
-        //}
+      $scope.toggleEdit = function () {
         $scope.edit = !$scope.edit;
       }
 
-      $scope.selectTab = function(tab) {
+      $scope.selectTab = function (tab) {
         selectedTab = tab;
       };
       $scope.isTabSelected = function (tab) {
         return selectedTab === tab;
       }
-
-      $scope.checkScope = function() {
-        console.log("====", '$scope', $scope);
-        console.log("====", '$scope.parent', $scope.$parent);
-      }
-
-    }])
-
-  //========================================================================
-  .controller('EquipmentEditController', ['$scope', '$state', '$stateParams', 'projectService', 'schemaService',
-    function ($scope, $state, $stateParams, projectService, schemaService) {
-
-      var projectName = $stateParams.projectName;
-      var eqpInfo = $stateParams.eqpInfo;
-      var itemId = $stateParams.itemId;
-
-
-      $scope.projectName = projectName;
-      $scope.eqpInfo = eqpInfo;
-
-      projectService.waitFor(projectService.getEquipmentItems(projectName, eqpInfo).get({id: itemId}),
-        function (response) {
-          $scope.item = response;
-
-        });
-
-      var editProps = schemaService.getProperties(eqpInfo.url, true).map(function(prop){
-        ;
-
-      });
-
-      $scope.properties = schemaService.getProperties(eqpInfo.url, true);
-
-      $scope.getValue = function (item, prop) {
-        return schemaService.getUIValue(item, prop);
-      };
 
     }])
 
